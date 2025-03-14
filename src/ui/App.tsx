@@ -5,6 +5,9 @@ import "./App.css";
 function App() {
   const [count, setCount] = useState(0);
 
+  // @ts-expect-error - electronのAPIを使用するため型定義が不完全
+  window.electron.getStaticData();
+
   return (
     <>
       <div>

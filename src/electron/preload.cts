@@ -2,7 +2,9 @@ const electron = require("electron");
 
 electron.contextBridge.exposeInMainWorld("electron", {
   subscribeStaticData: (callback: (statistics: any) => void) => {
-    callback({});
+    electron.ipcRenderer.on("statistics", (event, statistics) => {
+      callback(statistics);
+    });
   },
-  getStaticData: () => console.log("static"),
-});
+  getStaticData: () => electron.ipcRenderer.invoke("getStaticData"),
+} satisfies Window["electron"]);

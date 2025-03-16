@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
 
-  // @ts-expect-error - electronのAPIを使用するため型定義が不完全
-  window.electron.getStaticData();
+  useEffect(() => {
+    window.electron.subscribeStaticData((statistics) => {
+      console.log(statistics);
+    });
+  }, []);
 
   return (
     <>

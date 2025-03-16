@@ -1,6 +1,5 @@
-import osUtils from "os-utils";
-import fs from "fs";
 import os from "os";
+import fs from "fs";
 const POLLING_INTERVAL = 500;
 
 export function pollResource() {
@@ -19,7 +18,7 @@ export function pollResource() {
 export function getStaticData() {
   const totalStorage = getStorageData().total;
   const cpuModel = os.cpus()[0].model;
-  const totalMemoryGB = Math.floor(osUtils.totalmem() / 1024);
+  const totalMemoryGB = Math.floor(os.totalmem() / (1024 * 1024 * 1024));
 
   return {
     totalStorage,
@@ -30,20 +29,40 @@ export function getStaticData() {
 
 function getCpuUsage() {
   return new Promise((resolve) => {
-    osUtils.cpuUsage((percentage) => {
-      resolve(percentage);
-    });
+    const cpus = os.cpus();
+    setTimeout(() => {
+      const newCpus = os.cpus();
+      let totalIdle = 0;
+      let totalTick = 0;
+
+      for (let i = 0; i < cpus.length; i++) {
+        const cpu = newCpus[i];
+        const oldCpu = cpus[i];
+
+        const times = ["user", "nice", "sys", "idle", "irq"] as const;
+        for (const type of times) {
+          totalTick += cpu.times[type] - oldCpu.times[type];
+        }
+        totalIdle += cpu.times.idle - oldCpu.times.idle;
+      }
+
+      const usage = 100 - (totalIdle / totalTick) * 100;
+      resolve(usage.toFixed(2));
+    }, 1000);
   });
 }
 
 function getRamUsage() {
   return new Promise((resolve) => {
-    resolve(1 - osUtils.freememPercentage());
+    const totalMem = os.totalmem();
+    const freeMem = os.freemem();
+    const used = totalMem - freeMem;
+    const usagePercentage = ((used / totalMem) * 100).toFixed(2);
+    resolve(usagePercentage);
   });
 }
 
 function getStorageData() {
-  // requires node 18
   const stats = fs.statfsSync(process.platform === "win32" ? "C://" : "/");
   const total = stats.bsize * stats.blocks;
   const free = stats.bsize * stats.bfree;

@@ -1,7 +1,9 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Tray } from "electron";
 import { isDev, ipcMainHandle } from "./utils.js";
 import { getStaticData, pollResource } from "./resourceManager.js";
-import { getPreloadPath, getUIPath } from "./pathResolver.js";
+import { getAssetsPath, getPreloadPath, getUIPath } from "./pathResolver.js";
+import path from "path";
+
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
     webPreferences: {
@@ -20,4 +22,6 @@ app.on("ready", () => {
   ipcMainHandle("getStaticData", () => {
     return getStaticData();
   });
+
+  new Tray(path.join(getAssetsPath(), "trayIcon.png"));
 });

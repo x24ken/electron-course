@@ -1,6 +1,7 @@
 import os from "os";
 import fs from "fs";
 import { BrowserWindow } from "electron";
+import { ipcWebContentHandle } from "./utils.js";
 const POLLING_INTERVAL = 500;
 
 export function pollResource(mainWindow: BrowserWindow) {
@@ -9,9 +10,9 @@ export function pollResource(mainWindow: BrowserWindow) {
     const ramUsage = await getRamUsage();
     const storageUsage = getStorageData().usage * 100;
 
-    mainWindow.webContents.send("statistics", {
-      cpuUsage: Number(cpuUsage),
-      ramUsage: Number(ramUsage),
+    ipcWebContentHandle("statistics", mainWindow.webContents, {
+      cpuUsage,
+      ramUsage,
       storageUsage,
     });
   }, POLLING_INTERVAL);
@@ -29,7 +30,7 @@ export function getStaticData() {
   };
 }
 
-function getCpuUsage() {
+function getCpuUsage(): Promise<number> {
   return new Promise((resolve) => {
     const cpus = os.cpus();
     setTimeout(() => {
@@ -49,18 +50,18 @@ function getCpuUsage() {
       }
 
       const usage = 100 - (totalIdle / totalTick) * 100;
-      resolve(usage.toFixed(2));
+      resolve(Number(usage.toFixed(2)));
     }, 1000);
   });
 }
 
-function getRamUsage() {
+function getRamUsage(): Promise<number> {
   return new Promise((resolve) => {
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const used = totalMem - freeMem;
     const usagePercentage = ((used / totalMem) * 100).toFixed(2);
-    resolve(usagePercentage);
+    resolve(Number(usagePercentage));
   });
 }
 

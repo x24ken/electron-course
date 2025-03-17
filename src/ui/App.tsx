@@ -6,9 +6,13 @@ function App() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    window.electron.subscribeStaticData((statistics) => {
+    const unsubscribe = window.electron.subscribeStaticData((statistics) => {
       console.log(statistics);
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (

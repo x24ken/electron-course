@@ -42,8 +42,22 @@ function App() {
 
   return (
     <div className="App">
+      <header>
+        <button
+          id="close"
+          onClick={() => window.electron.sendFrameWindowAction("CLOSE")}
+        />
+        <button
+          id="minimize"
+          onClick={() => window.electron.sendFrameWindowAction("MINIMIZE")}
+        />
+        <button
+          id="maximize"
+          onClick={() => window.electron.sendFrameWindowAction("MAXIMIZE")}
+        />
+      </header>
       <div style={{ height: 120 }}>
-        <Chart data={data} maxDataPoints={10} />
+        <Chart data={data} maxDataPoints={10} selectedView={view} />
       </div>
       <div>
         <a href="https://react.dev" target="_blank">

@@ -11,12 +11,18 @@ electron.contextBridge.exposeInMainWorld("electron", {
   sendFrameWindowAction: (action) => ipcSend("sendFrameWindowAction", action),
 } satisfies Window["electron"]);
 
+/*
+レンダラーからメインへ送る(何か返ってくるよ)
+*/
 function ipcInvoke<Key extends keyof EventPayloadMapping>(
   key: Key
 ): Promise<EventPayloadMapping[Key]> {
   return electron.ipcRenderer.invoke(key);
 }
 
+/*
+レンダラーからの待受け状態
+*/
 function ipcOn<Key extends keyof EventPayloadMapping>(
   key: Key,
   callback: (payload: EventPayloadMapping[Key]) => void
@@ -34,6 +40,9 @@ function ipcOn<Key extends keyof EventPayloadMapping>(
   };
 }
 
+/*
+レンダラーからメインへ送る(何も返さなくていいよ)
+*/
 function ipcSend<Key extends keyof EventPayloadMapping>(
   key: Key,
   payload: EventPayloadMapping[Key]

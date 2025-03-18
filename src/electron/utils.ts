@@ -6,6 +6,9 @@ export function isDev(): boolean {
   return process.env.NODE_ENV === "development";
 }
 
+/*
+レンダラーから受けとり、何かしら返す
+*/
 export function ipcMainHandle<Key extends keyof EventPayloadMapping>(
   key: Key,
   handler: () => EventPayloadMapping[Key]
@@ -16,6 +19,9 @@ export function ipcMainHandle<Key extends keyof EventPayloadMapping>(
   });
 }
 
+/*
+レンダラーからの待ち受け状態
+*/
 export function ipcMainOn<Key extends keyof EventPayloadMapping>(
   key: Key,
   handler: (payload: EventPayloadMapping[Key]) => void
@@ -25,6 +31,9 @@ export function ipcMainOn<Key extends keyof EventPayloadMapping>(
   });
 }
 
+/*
+レンダラーに何か送る
+*/
 export function ipcWebContentHandle<Key extends keyof EventPayloadMapping>(
   key: Key,
   webContent: WebContents,

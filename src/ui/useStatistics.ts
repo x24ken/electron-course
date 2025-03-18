@@ -10,6 +10,7 @@ export function useStatistics(dataPointCount: number): Statistics[] {
         if (newData.length > dataPointCount) {
           newData.shift();
         }
+        console.log(newData);
         return newData;
       });
     });

@@ -9,8 +9,6 @@ const createTray = (mainWindow: BrowserWindow) => {
       process.platform === "darwin" ? "trayIconTemplate.png" : "trayIcon.png"
     )
   );
-  tray.setToolTip("CPU Monitor");
-
   tray.setContextMenu(
     Menu.buildFromTemplate([
       {

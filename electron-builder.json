@@ -1,8 +1,8 @@
 {
   "appId": "com.electron-course",
-  "files": ["dist-electron", "dist-react"],
+  "files": ["dist"],
   "icon": "desktop-icon.png",
-  "extraResources": ["dist-electron/preload.cjs", "src/assets/**"],
+  "extraResources": ["src/assets/**"],
   "mac": {
     "target": "dmg"
   },
